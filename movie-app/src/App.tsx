@@ -1,5 +1,6 @@
 
 import './App.css'
+import { useState } from "react";
 
 function App() {
   // javascriptを書く
@@ -30,16 +31,22 @@ function App() {
     },
   ]
 
+  // Reactの機能で、入力によって値が変わる変数などを扱う時にuseStateをつかう(画面更新)
+  // keywordがsetKeywordによって変わる
+  const [keyword, setKeyword] = useState("");
 
   // カーリーブレスと呼ばれる{}を使ってjavascriptを使える
   return(
     // HTMLを書く
     <div>
-      {defaultMovieList.map((movie) => (
+      <div>{keyword}</div>
+      {/* eはイベントを表す */}
+      <input type = "text" onChange={(e) => setKeyword(e.target.value)}/>
+      {defaultMovieList.filter((movie) => movie.name.includes(keyword)).map((movie) => (
         <div key = {movie.id}>
           <h2>{movie.name}</h2>
-          <img src={movie.image}/>
-          <p>{movie.overview}</p> 
+          <img src = {movie.image}/>
+          <p>{movie.overview}</p>
         </div>
       ))}
     </div>
