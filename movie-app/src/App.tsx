@@ -31,14 +31,17 @@ function App() {
   ]
 
 
+  // カーリーブレスと呼ばれる{}を使ってjavascriptを使える
   return(
     // HTMLを書く
     <div>
-      <div>
-        <p>{defaultMovieList[0].name}</p>
-        <img src={defaultMovieList[0].image}/>
-        <p>{defaultMovieList[0].overview}</p>
-      </div>
+      {defaultMovieList.map((movie) => (
+        <div key = {movie.id}>
+          <h2>{movie.name}</h2>
+          <img src={movie.image}/>
+          <p>{movie.overview}</p> 
+        </div>
+      ))}
     </div>
   );
 }
