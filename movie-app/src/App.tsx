@@ -35,6 +35,7 @@ function App() {
   // keywordがsetKeywordによって変わる
   const [keyword, setKeyword] = useState("");
 
+  // カーリーブレスと呼ばれる{}を使ってjavascriptを使える
   return(
     // HTMLを書く
     <div>
