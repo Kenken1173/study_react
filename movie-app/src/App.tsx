@@ -54,6 +54,7 @@ function App() {
     fetchMovieList()
   }, [])
 
+  // カーリーブレスと呼ばれる{}を使ってjavascriptを使える
   return(
     // HTMLを書く
     <div>
