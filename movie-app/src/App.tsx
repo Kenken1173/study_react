@@ -1,8 +1,9 @@
 
 import './App.css'
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
+  const apiKey = import.meta.env.VITE_TMDB_API_KEY;
   // javascriptを書く
   const defaultMovieList = [
     {
@@ -24,7 +25,7 @@ function App() {
       overview: "山里に住む若者アシタカは、怒りと憎しみにより“タタリ神”と化した猪神から呪いをかけられてしまう。呪いを解く術を求めて旅に出るアシタカはやがて、西方の地で“タタラ”の村にたどり着く。エボシ御前が率いるその村では、鉄を造り続けていたが、同時にそれは神々の住む森を破壊することでもあった。そして、そんなタタラ達に戦いを挑むサンの存在をアシタカは知る。人の子でありながら山犬に育てられた彼女は“もののけ姫”と呼ばれていた。"
     },
     {
-      id: 2,
+      id: 4,
       name: "バックトゥーザフィーチャー",
       image: "https://media.themoviedb.org/t/p/w600_and_h900_bestv2/oHaxzQXWSvIsctZfAYSW0tn54gQ.jpg",
       overview: "スティーブン・スピルバーグとロバート・ゼメキスが贈るSFアドベンチャーシリーズ第1弾。高校生のマーティは、科学者・ドクの発明したタイムマシン・デロリアンで過去にタイムスリップしてしまう。",
@@ -34,6 +35,24 @@ function App() {
   // Reactの機能で、入力によって値が変わる変数などを扱う時にuseStateをつかう(画面更新)
   // keywordがsetKeywordによって変わる
   const [keyword, setKeyword] = useState("");
+
+  const fetchMovieList = async() => {
+    const response = await fetch(
+      'https://api.themoviedb.org/3/movie/popular?language=ja&page=1',
+      {
+        headers:{
+          Authorization: `Bearer ${import.meta.env.VITE_TMDB_API_KEY}`,
+        }
+      }
+    );
+
+    const data = await response.json();
+    console.log(data);
+  };
+
+  useEffect(() => {
+    fetchMovieList()
+  }, [])
 
   return(
     // HTMLを書く
