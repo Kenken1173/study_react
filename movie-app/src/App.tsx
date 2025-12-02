@@ -2,6 +2,32 @@
 import './App.css'
 import { useEffect, useState } from "react";
 
+// 今回使用予定のプロパティ
+type Movie = {
+  id: number;
+  original_title: string;
+  poster_path: string;
+  overview: string;
+}
+
+// apiを取得して返ってくる
+type MovieJson = {
+  adult: boolean;
+  backdrop_path: string;
+  genre_ids: number[];
+  id: number;
+  original_language: string;
+  original_title: string;
+  overview: string;
+  popularity: number;
+  poster_path: string;
+  release_data: string;
+  title: string;
+  video: boolean;
+  vote_average: number;
+  vote_count: number;
+}
+
 function App() {
   const apiKey = import.meta.env.VITE_TMDB_API_KEY;
   // javascriptを書く
@@ -35,7 +61,7 @@ function App() {
   // Reactの機能で、入力によって値が変わる変数などを扱う時にuseStateをつかう(画面更新)
   // keywordがsetKeywordによって変わる
   const [keyword, setKeyword] = useState("");
-  const [movieList, setMovieList] = useState([]);
+  const [movieList, setMovieList] = useState<Movie[]>([]);
 
   // 非同期処理
   const fetchMovieList = async() => {
@@ -49,7 +75,13 @@ function App() {
     );
 
     const data = await response.json();
-    setMovieList(data.results);
+    setMovieList(data.results.map((movie: MovieJson) => ({
+      id: movie.id,
+      original_title: movie.original_title,
+      overview: movie.overview,
+      poster_path: movie.poster_path,
+    }))
+    );
   };
 
   // フックスの一つ
