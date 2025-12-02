@@ -35,6 +35,7 @@ function App() {
   // Reactの機能で、入力によって値が変わる変数などを扱う時にuseStateをつかう(画面更新)
   // keywordがsetKeywordによって変わる
   const [keyword, setKeyword] = useState("");
+  const [movieList, setMovieList] = useState([]);
 
   // 非同期処理
   const fetchMovieList = async() => {
@@ -42,13 +43,13 @@ function App() {
       "https://api.themoviedb.org/3/movie/popular?language=Ja&page=1",
       {
         headers:{
-          Authorization: `Bearer ${import.meta.env.VITE_TMDB_API_KEY}`,
+          Authorization: `Bearer ${apiKey}`,
         },
       }
     );
 
     const data = await response.json();
-    console.log(data);
+    setMovieList(data.results);
   };
 
   // フックスの一つ
@@ -63,10 +64,10 @@ function App() {
       <div>{keyword}</div>
       {/* eはイベントを表す */}
       <input type = "text" onChange={(e) => setKeyword(e.target.value)}/>
-      {defaultMovieList.filter((movie) => movie.name.includes(keyword)).map((movie) => (
+      {movieList.filter((movie) => movie.original_title.includes(keyword)).map((movie) => (
         <div key = {movie.id}>
-          <h2>{movie.name}</h2>
-          <img src = {movie.image}/>
+          <h2>{movie.original_title}</h2>
+          <img src = {`https://media.themoviedb.org/t/p/w600_and_h900_face/${movie.poster_path}`}/>
           <p>{movie.overview}</p>
         </div>
       ))}
