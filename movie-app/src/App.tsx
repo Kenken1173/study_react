@@ -65,8 +65,16 @@ function App() {
 
   // 非同期処理
   const fetchMovieList = async() => {
+    let url = ""
+    if (keyword){
+      // moviedbのsearch movie apiのエンドポイントを使用
+      url = `https://api.themoviedb.org/3/search/movie?query=${keyword}&include_adult=false&language=jaS&page=1`;
+    } else{
+      url = "https://api.themoviedb.org/3/movie/popular?language=Ja&page=1";
+    }
+
     const response = await fetch(
-      "https://api.themoviedb.org/3/movie/popular?language=Ja&page=1",
+      url,
       {
         headers:{
           Authorization: `Bearer ${apiKey}`,
@@ -87,7 +95,7 @@ function App() {
   // フックスの一つ
   useEffect(() => {
     fetchMovieList()
-  }, [])
+  }, [keyword])
 
   // カーリーブレスと呼ばれる{}を使ってjavascriptを使える
   return(
