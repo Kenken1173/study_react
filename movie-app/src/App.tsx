@@ -1,8 +1,35 @@
 
 import './App.css'
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+// 今回使用予定のプロパティ
+type Movie = {
+  id: number;
+  original_title: string;
+  poster_path: string;
+  overview: string;
+}
+
+// apiを取得して返ってくる
+type MovieJson = {
+  adult: boolean;
+  backdrop_path: string;
+  genre_ids: number[];
+  id: number;
+  original_language: string;
+  original_title: string;
+  overview: string;
+  popularity: number;
+  poster_path: string;
+  release_data: string;
+  title: string;
+  video: boolean;
+  vote_average: number;
+  vote_count: number;
+}
 
 function App() {
+  const apiKey = import.meta.env.VITE_TMDB_API_KEY;
   // javascriptを書く
   const defaultMovieList = [
     {
@@ -24,7 +51,7 @@ function App() {
       overview: "山里に住む若者アシタカは、怒りと憎しみにより“タタリ神”と化した猪神から呪いをかけられてしまう。呪いを解く術を求めて旅に出るアシタカはやがて、西方の地で“タタラ”の村にたどり着く。エボシ御前が率いるその村では、鉄を造り続けていたが、同時にそれは神々の住む森を破壊することでもあった。そして、そんなタタラ達に戦いを挑むサンの存在をアシタカは知る。人の子でありながら山犬に育てられた彼女は“もののけ姫”と呼ばれていた。"
     },
     {
-      id: 2,
+      id: 4,
       name: "バックトゥーザフィーチャー",
       image: "https://media.themoviedb.org/t/p/w600_and_h900_bestv2/oHaxzQXWSvIsctZfAYSW0tn54gQ.jpg",
       overview: "スティーブン・スピルバーグとロバート・ゼメキスが贈るSFアドベンチャーシリーズ第1弾。高校生のマーティは、科学者・ドクの発明したタイムマシン・デロリアンで過去にタイムスリップしてしまう。",
@@ -34,6 +61,41 @@ function App() {
   // Reactの機能で、入力によって値が変わる変数などを扱う時にuseStateをつかう(画面更新)
   // keywordがsetKeywordによって変わる
   const [keyword, setKeyword] = useState("");
+  const [movieList, setMovieList] = useState<Movie[]>([]);
+
+  // 非同期処理
+  const fetchMovieList = async() => {
+    let url = ""
+    if (keyword){
+      // moviedbのsearch movie apiのエンドポイントを使用
+      url = `https://api.themoviedb.org/3/search/movie?query=${keyword}&include_adult=false&language=jaS&page=1`;
+    } else{
+      url = "https://api.themoviedb.org/3/movie/popular?language=Ja&page=1";
+    }
+
+    const response = await fetch(
+      url,
+      {
+        headers:{
+          Authorization: `Bearer ${apiKey}`,
+        },
+      }
+    );
+
+    const data = await response.json();
+    setMovieList(data.results.map((movie: MovieJson) => ({
+      id: movie.id,
+      original_title: movie.original_title,
+      overview: movie.overview,
+      poster_path: movie.poster_path,
+    }))
+    );
+  };
+
+  // フックスの一つ
+  useEffect(() => {
+    fetchMovieList()
+  }, [keyword])
 
   // カーリーブレスと呼ばれる{}を使ってjavascriptを使える
   return(
@@ -42,10 +104,10 @@ function App() {
       <div>{keyword}</div>
       {/* eはイベントを表す */}
       <input type = "text" onChange={(e) => setKeyword(e.target.value)}/>
-      {defaultMovieList.filter((movie) => movie.name.includes(keyword)).map((movie) => (
+      {movieList.filter((movie) => movie.original_title.includes(keyword)).map((movie) => (
         <div key = {movie.id}>
-          <h2>{movie.name}</h2>
-          <img src = {movie.image}/>
+          <h2>{movie.original_title}</h2>
+          <img src = {`https://media.themoviedb.org/t/p/w600_and_h900_face/${movie.poster_path}`}/>
           <p>{movie.overview}</p>
         </div>
       ))}
