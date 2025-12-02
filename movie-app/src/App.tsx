@@ -36,13 +36,14 @@ function App() {
   // keywordがsetKeywordによって変わる
   const [keyword, setKeyword] = useState("");
 
+  // 非同期処理
   const fetchMovieList = async() => {
     const response = await fetch(
-      'https://api.themoviedb.org/3/movie/popular?language=ja&page=1',
+      "https://api.themoviedb.org/3/movie/popular?language=Ja&page=1",
       {
         headers:{
           Authorization: `Bearer ${import.meta.env.VITE_TMDB_API_KEY}`,
-        }
+        },
       }
     );
 
@@ -50,6 +51,7 @@ function App() {
     console.log(data);
   };
 
+  // フックスの一つ
   useEffect(() => {
     fetchMovieList()
   }, [])
