@@ -1,10 +1,11 @@
 
+import { Link } from 'react-router';
 import './App.css'
 import { useEffect, useState } from "react";
 
 // 今回使用予定のプロパティ
 type Movie = {
-  id: number;
+  id: string;
   original_title: string;
   poster_path: string;
   overview: string;
@@ -15,7 +16,7 @@ type MovieJson = {
   adult: boolean;
   backdrop_path: string;
   genre_ids: number[];
-  id: number;
+  id: string;
   original_language: string;
   original_title: string;
   overview: string;
@@ -78,11 +79,11 @@ function App() {
       {/* eはイベントを表す */}
       <input type="text" onChange={(e) => setKeyword(e.target.value)} />
       {movieList.filter((movie) => movie.original_title.includes(keyword)).map((movie) => (
-        <div key={movie.id}>
+        <Link to={`/movies/${movie.id}`} key={movie.id}>
           <h2>{movie.original_title}</h2>
           <img src={`https://media.themoviedb.org/t/p/w600_and_h900_face/${movie.poster_path}`} />
           <p>{movie.overview}</p>
-        </div>
+        </Link>
       ))}
     </div>
   );
