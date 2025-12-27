@@ -1,5 +1,7 @@
-import { useParams } from "react-router";
 import { useState, useEffect } from "react";
+import { Link, useParams } from "react-router";
+import "./MovieDetails.css";
+import { ArrowLeft, Clock, Star } from "lucide-react";
 
 // apiから返ってくる期待される値
 type MovieDetailJson = {
@@ -71,13 +73,13 @@ function MovieDetail() {
             }
         );
 
-        const data = await response.json();
+        const data = await response.json() as MovieDetailJson;
         setMovie({
             id: data.id,
             original_title: data.original_title,
             overview: data.overview,
             poster_path: data.poster_path,
-            year: data.release_date.split("-")[0],
+            year: Number(data.release_date.split("-")[0]),
             rating: data.vote_average,
             runtime: data.runtime,
             score: data.vote_count,
@@ -90,22 +92,68 @@ function MovieDetail() {
     }, []);
 
     return (
-        <div>
-            {/* movieがあればその下の処理を行う */}
+        <div className="movie-detail-root">
             {movie && (
-                <div>
-                    <h2>{movie.original_title}</h2>
-                    <img src={`https://media.themoviedb.org/t/p/w600_and_h900_face/${movie.poster_path}`} />
-                    <p>{movie.overview}</p>
-                    <p>{movie.year}</p>
-                    <p>{movie.rating}</p>
-                    <p>{movie.runtime}</p>
-                    <p>{movie.score}</p>
-                    <p>{movie.genres}</p>
-                </div>
+                <>
+                    <div
+                        className="movie-detail-backdrop"
+                        style={{
+                            backgroundImage: `url(${"https://image.tmdb.org/t/p/w500" + movie.poster_path
+                                })`,
+                        }}
+                    />
+                    <div className="movie-detail-backdrop-gradient" />
+                    <div className="movie-detail-container">
+                        <Link to="/" className="movie-detail-backlink">
+                            <ArrowLeft className="movie-detail-backlink-icon" size={20} />
+                            Back to home
+                        </Link>
+                        <div className="movie-detail-grid">
+                            <div className="movie-detail-poster-wrap">
+                                <img
+                                    src={"https://image.tmdb.org/t/p/w500" + movie.poster_path}
+                                    alt={movie.original_title}
+                                    className="movie-detail-poster-img"
+                                />
+                            </div>
+                            <div className="movie-detail-details">
+                                {/* ここからhttps://github.com/jinwatanabe/movie-app-for-react-beginner/blob/main/src/MovieDetail.tsxを参考に */}
+                                <h1 className="movie-detail-title">{movie.original_title}</h1>
+                                <div className="movie-detail-badges">
+                                    <span className="badge-outline">{movie.year}</span>
+                                    <span className="badge-outline">PG-13</span>
+                                    <span className="badge-outline">
+                                        <Clock className="badge-icon-svg" size={14} />
+                                        {movie.runtime}分
+                                    </span>
+                                    <span className="badge-outline">
+                                        <Star className="badge-icon-svg badge-star" size={14} />
+                                        {(movie.rating / 10).toFixed(1)}
+                                    </span>
+                                </div>
+                                <p className="movie-detail-overview">{movie.overview}</p>
+                                <div className="movie-detail-genres">
+                                    {movie.genres.map((g) => (
+                                        <span key={g} className="badge-genre">
+                                            {g}
+                                        </span>
+                                    ))}
+                                </div>
+                                <div className="movie-detail-actions">
+                                    <button className="movie-detail-btn movie-detail-btn-primary">
+                                        ▶ Watch Now
+                                    </button>
+                                    <button className="movie-detail-btn">
+                                        + Add to My List
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </>
             )}
-        </div >
-    )
+        </div>
+    );
 }
 
 export default MovieDetail;
