@@ -103,7 +103,7 @@ function MovieDetail() {
                         }}
                     />
                     <div className="movie-detail-backdrop-gradient" />
-                    <div className="movie-derail-conttainer">
+                    <div className="movie-detail-container">
                         <Link to="/" className="movie-detail-backlink">
                             <ArrowLeft className="movie-detail-backlink-icon" size={20} />
                             Back to home
